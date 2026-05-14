@@ -109,10 +109,13 @@ class Command(BaseCommand):
 
         # Categories & subcategories
         for cat_data in CATEGORIES:
-            subcats = cat_data.pop('subcategories')
+            subcats = cat_data.get('subcategories', [])
             cat, _ = ServiceCategory.objects.get_or_create(
                 name=cat_data['name'],
-                defaults={**cat_data}
+                defaults={
+                    'icon': cat_data['icon'],
+                    'description': cat_data['description']
+                }
             )
             for sub in subcats:
                 ServiceSubCategory.objects.get_or_create(
