@@ -91,12 +91,23 @@ class Command(BaseCommand):
         self.stdout.write('🌱 Seeding database...')
 
         # Admin
-        if not User.objects.filter(email='admin@demo.com').exists():
+        admin_email = 'reddydivyashree787@gmail.com'
+        if not User.objects.filter(email=admin_email).exists():
             User.objects.create_superuser(
-                email='admin@demo.com', password='admin123',
-                first_name='Admin', last_name='User'
+                email=admin_email, password='admin123',
+                first_name='Divyashree', last_name='Reddy',
+                role='admin'
             )
-            self.stdout.write('  ✅ Admin user created')
+            self.stdout.write(f'  ✅ Admin user created: {admin_email}')
+        else:
+            # Ensure existing user has admin role and reset password
+            u = User.objects.get(email=admin_email)
+            u.role = 'admin'
+            u.is_staff = True
+            u.is_superuser = True
+            u.set_password('admin123')
+            u.save()
+            self.stdout.write(f'  ✅ Admin permissions and password reset for: {admin_email}')
 
         # Demo customer
         if not User.objects.filter(email='customer@demo.com').exists():
@@ -168,7 +179,6 @@ class Command(BaseCommand):
                     )
         self.stdout.write('  ✅ Providers seeded')
         self.stdout.write(self.style.SUCCESS('\n🎉 Seeding complete!\n'))
-        self.stdout.write('Demo accounts:')
-        self.stdout.write('  Admin:    admin@demo.com / admin123')
+        self.stdout.write(f'  Admin:    reddydivyashree787@gmail.com / admin123')
         self.stdout.write('  Customer: customer@demo.com / demo1234')
         self.stdout.write('  Provider: provider1@demo.com / demo1234')
