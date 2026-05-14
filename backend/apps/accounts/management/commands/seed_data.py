@@ -105,6 +105,7 @@ class Command(BaseCommand):
             u.role = 'admin'
             u.is_staff = True
             u.is_superuser = True
+            u.is_active = True
             u.set_password('admin123')
             u.save()
             self.stdout.write(f'  ✅ Admin permissions and password reset for: {admin_email}')
