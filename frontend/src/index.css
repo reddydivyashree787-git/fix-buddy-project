@@ -316,3 +316,41 @@ a {
 .hero-search-input::placeholder {
   color: rgba(255, 255, 255, 0.8);
 }
+
+/* Responsive Dashboard & Layout Utilities */
+@media (max-width: 768px) {
+  .responsive-dashboard {
+    flex-direction: column !important;
+  }
+  .responsive-sidebar {
+    width: 100% !important;
+    position: static !important;
+    height: auto !important;
+  }
+  .responsive-sidebar-nav {
+    flex-direction: row !important;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .responsive-sidebar-nav::-webkit-scrollbar {
+    height: 4px;
+  }
+  .responsive-sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  .responsive-sidebar-nav button {
+    width: auto !important;
+    white-space: nowrap !important;
+  }
+  .responsive-sidebar-nav .sidebar-text {
+    display: inline !important;
+    opacity: 1 !important;
+  }
+  .responsive-grid-sidebar {
+    grid-template-columns: 1fr !important;
+  }
+  .responsive-hide-mobile {
+    display: none !important;
+  }
+}

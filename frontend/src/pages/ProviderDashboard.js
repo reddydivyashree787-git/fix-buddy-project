@@ -7,6 +7,7 @@ import ProviderEarnings from '../components/ProviderEarnings';
 
 export default function ProviderDashboard() {
   const { user, refreshUser } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [tab, setTab]           = useState('overview');
   const [bookings, setBookings] = useState([]);
   const [reviews, setReviews]   = useState([]);
@@ -223,22 +224,37 @@ export default function ProviderDashboard() {
   );
 
   return (
-    <div className="container page" style={{ display: 'flex', gap: 32, alignItems: 'flex-start', minHeight: 'calc(100vh - 64px)' }}>
+    <div className="container page responsive-dashboard" style={{ display: 'flex', gap: isSidebarOpen ? 32 : 16, alignItems: 'flex-start', minHeight: 'calc(100vh - 64px)', transition: 'gap 0.3s' }}>
       
       {/* Sidebar */}
-      <div style={{ width: 250, flexShrink: 0, position: 'sticky', top: 88 }}>
-        <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.2 }}>Provider Dashboard</h1>
-          <p style={{ color: '#64748b', fontSize: 14, marginTop: 4 }}>Manage your services</p>
-          <div style={{ marginTop: 12 }}>
-            {profile?.is_verified
-              ? <span style={{ padding:'4px 12px', background:'#dcfce7', color:'#166534', borderRadius:20, fontWeight:600, fontSize:12 }}>✓ Verified</span>
-              : <span style={{ padding:'4px 12px', background:'#fef3c7', color:'#92400e', borderRadius:20, fontSize:12 }}>Pending Verification</span>
-            }
-          </div>
+      <div className="responsive-sidebar" style={{ width: isSidebarOpen ? 250 : 80, flexShrink: 0, position: 'sticky', top: 88, transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: isSidebarOpen ? 'space-between' : 'center', alignItems: 'flex-start', marginBottom: 28 }}>
+          {isSidebarOpen && (
+            <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+              <h1 style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.2 }}>Provider Dashboard</h1>
+              <p style={{ color: '#64748b', fontSize: 14, marginTop: 4 }}>Manage your services</p>
+              <div style={{ marginTop: 12 }}>
+                {profile?.is_verified
+                  ? <span style={{ padding:'4px 12px', background:'#dcfce7', color:'#166534', borderRadius:20, fontWeight:600, fontSize:12 }}>✓ Verified</span>
+                  : <span style={{ padding:'4px 12px', background:'#fef3c7', color:'#92400e', borderRadius:20, fontSize:12 }}>Pending Verification</span>
+                }
+              </div>
+            </div>
+          )}
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 8, borderRadius: 8, color: '#64748b' }}
+            title="Toggle Sidebar"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="responsive-hide-mobile">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="responsive-sidebar-nav" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {[
             { id: 'overview', icon: '📊', label: 'Overview' },
             { id: 'pending', icon: '⏳', label: 'Pending Requests' },
@@ -253,17 +269,21 @@ export default function ProviderDashboard() {
               key={t.id}
               onClick={() => setTab(t.id)}
               style={{
-                display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
+                display: 'flex', alignItems: 'center', gap: isSidebarOpen ? 12 : 0, padding: isSidebarOpen ? '12px 16px' : '12px',
+                justifyContent: isSidebarOpen ? 'flex-start' : 'center',
                 borderRadius: 12, border: 'none', cursor: 'pointer',
                 background: tab === t.id ? '#eff6ff' : 'transparent',
                 color: tab === t.id ? '#2563eb' : '#64748b',
                 fontWeight: tab === t.id ? 600 : 500,
                 transition: 'all 0.2s ease',
                 textAlign: 'left',
-                width: '100%'
-              }}>
-              <span style={{ fontSize: 18 }}>{t.icon}</span>
-              <span>{t.label}</span>
+                width: '100%',
+                whiteSpace: 'nowrap'
+              }}
+              title={!isSidebarOpen ? t.label : ''}
+            >
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{t.icon}</span>
+              {isSidebarOpen && <span className="sidebar-text" style={{ transition: 'opacity 0.2s' }}>{t.label}</span>}
             </button>
           ))}
         </div>

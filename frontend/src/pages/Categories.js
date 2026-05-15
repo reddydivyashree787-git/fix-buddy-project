@@ -380,7 +380,7 @@ export function BookService() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
+      <div className="responsive-grid-sidebar" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
         {/* Left: Providers */}
         <div>
           {/* Filters */}
