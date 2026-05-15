@@ -146,8 +146,9 @@ class RazorpayService:
             )
             if response.status_code >= 400:
                 err_msg = response.json().get('error', {}).get('description', response.text)
-                # If RazorpayX is not enabled on the test account, mock it in development
-                if "The requested URL was not found" in err_msg and getattr(settings, 'DEBUG', True):
+                # If RazorpayX is not enabled on the test account, mock it for test keys or development
+                is_test_key = key_id.startswith('rzp_test_') if key_id else False
+                if "The requested URL was not found" in err_msg and (getattr(settings, 'DEBUG', True) or is_test_key):
                     import time
                     return {
                         'id': f'pout_mock_{int(time.time())}',
