@@ -281,13 +281,13 @@ export default function AdminPayouts() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {payout.status === 'pending' && (
+                      {['pending', 'failed'].includes(payout.status) && (
                         <button
                           onClick={() => handlePayProvider(payout.id)}
                           disabled={processingId === payout.id}
                           className="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 disabled:opacity-50"
                         >
-                          {processingId === payout.id ? 'Processing...' : 'Pay Provider'}
+                          {processingId === payout.id ? 'Processing...' : (payout.status === 'failed' ? 'Retry Payout' : 'Pay Provider')}
                         </button>
                       )}
                     </td>
