@@ -655,6 +655,13 @@ class PayoutViewSet(viewsets.ReadOnlyModelViewSet):
         if payout.status not in ['pending', 'failed']:
             return Response({'error': f'Cannot initiate payout with status {payout.status}'}, status=status.HTTP_400_BAD_REQUEST)
             
+        if not payout.bank_account:
+            from apps.payments.models import ProviderBankAccount
+            bank_account = ProviderBankAccount.objects.filter(provider=payout.provider).first()
+            if bank_account:
+                payout.bank_account = bank_account
+                payout.save()
+
         if not payout.bank_account or not payout.bank_account.razorpay_fund_account_id:
             return Response({'error': 'Provider does not have a verified bank account with a fund account ID'}, status=status.HTTP_400_BAD_REQUEST)
             
