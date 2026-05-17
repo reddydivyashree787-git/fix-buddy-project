@@ -112,6 +112,9 @@ class PaymentViewSet(viewsets.ModelViewSet):
                 'amount': float(amount),
                 'currency': 'INR',
                 'key_id': getattr(settings, 'RAZORPAY_KEY_ID', 'rzp_test_YOUR_KEY_ID'),
+                'customer_name': booking.customer.full_name,
+                'customer_email': booking.customer.email,
+                'customer_phone': booking.customer.phone,
             }, status=status.HTTP_201_CREATED)
 
         except Booking.DoesNotExist:

@@ -160,9 +160,9 @@ const PaymentCheckout = ({ bookingId, onPaymentSuccess, onPaymentError }) => {
       // Add customer info for prefill
       const enrichedData = {
         ...data,
-        customer_name: booking?.customer?.full_name || booking?.customer?.first_name || '',
-        customer_email: booking?.customer?.email || '',
-        customer_phone: booking?.customer?.phone || '',
+        customer_name: data.customer_name || booking?.customer_name || '',
+        customer_email: data.customer_email || booking?.customer_email || '',
+        customer_phone: data.customer_phone || booking?.customer_phone || '',
       };
       setRazorpayData(enrichedData);
       setLoading(false);
