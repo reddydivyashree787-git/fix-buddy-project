@@ -154,25 +154,29 @@ class NotificationService:
     @staticmethod
     def _send_email_notification(notification, preferences):
         """
-        Send email notification using Django's email backend
+        Send email notification using Django's email backend asynchronously
         """
-        try:
-            from django.core.mail import send_mail
-            from django.conf import settings
-            
-            send_mail(
-                subject=notification.title,
-                message=notification.message,
-                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@fixbuddy.com'),
-                recipient_list=[notification.recipient.email],
-                fail_silently=False,
-            )
-            
-            notification.is_email_sent = True
-            notification.save(update_fields=['is_email_sent'])
-            logger.info(f"Email notification sent to {notification.recipient.email}")
-        except Exception as e:
-            logger.error(f"Failed to send email to {notification.recipient.email}: {str(e)}")
+        import threading
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        def send_async():
+            try:
+                send_mail(
+                    subject=notification.title,
+                    message=notification.message,
+                    from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@fixbuddy.com'),
+                    recipient_list=[notification.recipient.email],
+                    fail_silently=False,
+                )
+                
+                notification.is_email_sent = True
+                notification.save(update_fields=['is_email_sent'])
+                logger.info(f"Email notification sent to {notification.recipient.email}")
+            except Exception as e:
+                logger.error(f"Failed to send email to {notification.recipient.email}: {str(e)}")
+
+        threading.Thread(target=send_async).start()
 
     @staticmethod
     def _send_sms_notification(notification, preferences):
