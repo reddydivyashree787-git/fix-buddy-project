@@ -216,6 +216,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
                     status='captured'
                 )
 
+                # Send email receipt from our platform
+                try:
+                    from apps.notifications.services import notify_payment_success
+                    notify_payment_success(payment)
+                except Exception as notify_error:
+                    logger.error(f"Failed to send payment success notification: {str(notify_error)}")
+
             return Response({
                 'success': True,
                 'payment_id': payment.id,
